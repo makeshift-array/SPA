@@ -1,0 +1,46 @@
+{
+  "name": "SPA",
+  "version": "1.0.0",
+  "description": "Experiment using Vue, Express, and Mongo to create a single page app.",
+  "main": "server/index.js",
+  "private": "true",
+  "scripts": {
+    "dev": "nodemon server/index.js --exec babel-node --ignore client --ignore --client_dist",
+    "build": "webpack -p",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/makeshift-array/SPA.git"
+  },
+  "keywords": [],
+  "author": "Makeshift Array",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/makeshift-array/SPA/issues"
+  },
+  "homepage": "https://github.com/makeshift-array/SPA#readme",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "express": "^4.15.2",
+    "mongoose": "^4.9.2",
+    "vue": "^2.2.6",
+    "vue-router": "^2.3.1",
+    "vuex": "^2.2.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-latest": "^6.24.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "css-loader": "^0.28.0",
+    "html-webpack-plugin": "^2.28.0",
+    "nodemon": "^1.11.0",
+    "vue-loader": "^11.3.4",
+    "vue-template-compiler": "^2.2.6",
+    "webpack": "^2.3.2",
+    "webpack-dev-middleware": "^1.10.1",
+    "webpack-hot-middleware": "^2.18.0"
+  }
+}
