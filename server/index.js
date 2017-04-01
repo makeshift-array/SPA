@@ -40,7 +40,7 @@ if (process.env.NODE_ENV !== 'production') {
 } else {
   app.use(express.static('client_dist'))
   app.get('*', (req, res) => {
-    res.sendFile(resolve(__dirname, 'client_dist/index.html'))
+    res.sendFile(resolve(__dirname, '../client_dist/index.html'))
   })
 }
 

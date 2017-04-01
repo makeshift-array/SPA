@@ -5,14 +5,19 @@ import HtmlWebpackPlugin from 'html-webpack-plugin'
 // TODO: Correct dist build.
 export default {
   entry: {
-    app: resolve(__dirname, 'client/main.js')
+    app: [
+      'webpack-hot-middleware/client',
+      resolve(__dirname, 'client/main.js')
+    ]
   },
   output: {
     path: resolve(__dirname, 'client_dist'),
-    filename: '[name].[chunkhash].js'
+    filename: '[name].[hash].js',
+    publicPath: '/'
   },
   devServer: {
-    stats: false
+    stats: false,
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -36,11 +41,13 @@ export default {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
     }),
+    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.NoEmitOnErrorsPlugin(), // TODO: Trigger only on dist build.
     new HtmlWebpackPlugin({
       template: resolve(__dirname, 'client/index.html'),
-      // minify: { // TODO: Trigger only on dist build.
-      //   collapseWhitespace: true
-      // }
+      minify: { // TODO: Trigger only on dist build.
+        collapseWhitespace: true
+      }
     })
   ],
   resolve: {
