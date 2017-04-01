@@ -9,5 +9,3 @@ new Vue({
   store,
   render: h => h(App)
 })
-
-if (module.hot) module.hot.accept()
