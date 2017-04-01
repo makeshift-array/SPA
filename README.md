@@ -1,2 +1,2 @@
 # SPA
-Experiment using a Vue, Express, and Mongo to create a SPA
+Experiment using Vue, Express, and Mongo to create a SPA
