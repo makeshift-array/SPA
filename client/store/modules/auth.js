@@ -15,7 +15,7 @@ export default {
     },
 
     async register({ commit }, payload) {
-      const register = await axios.post('/auth/register', payload)
+      const register = await axios.post('/auth/register', payload).then(data => data.data)
 
       console.log('registering', register)
     }

@@ -3,12 +3,12 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 
-router.route('/login')
+router.route('/auth/login')
   .post((req, res) => {
     console.log('asd')
   })
 
-router.route('/register')
+router.route('/auth/register')
   .post((req, res) => {
     res.json({
       msg: 'success!'
