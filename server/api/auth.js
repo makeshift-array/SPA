@@ -10,7 +10,9 @@ router.route('/login')
 
 router.route('/register')
   .post((req, res) => {
-    console.log('asd')
+    res.json({
+      msg: 'success!'
+    })
   })
 
 module.exports = router

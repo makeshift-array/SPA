@@ -16,7 +16,7 @@ export default {
     publicPath: '/'
   },
   devServer: {
-    stats: false,
+    stats: true,
     publicPath: '/'
   },
   module: {

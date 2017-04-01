@@ -9,6 +9,7 @@ export default {
 }
 </script>
 
-<style>
-  
+<style lang="sass">
+// Global Styles
+@import './scss/app'
 </style>
