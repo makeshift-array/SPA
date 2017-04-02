@@ -1,13 +1,14 @@
-// TODO: Write an API abstraction class
-const express = require('express')
+import express from 'express'
+import mongoose from 'mongoose'
+import { success, error } from './api'
+
 const router = express.Router()
-const mongoose = require('mongoose')
 const User = mongoose.model('User')
 
 // TODO: Add JWT support
 router.route('/auth')
   .get((req, res) => {
-    res.json({ authorized: false })
+    res.json(error({ authorized: false }))
   })
 
 // TODO: Add JWT support
@@ -16,14 +17,14 @@ router.route('/auth/login')
     let { email, password } = req.body
 
     User.findOne({ email }, (err, doc) => {
-      if (err) return res.json({ status: 'error', err })
+      if (err) return res.json(error(err))
 
       doc.verifyPassword(password, (err, isValid) => {
-        if (err) return res.json({ status: 'error', err })
+        if (err) return res.json(error(err))
 
         isValid ? 
-          res.json({ status: 'success', name: doc.name, email }) :
-          res.json({ status: 'error', msg: 'Invalid username or password.'})
+          res.json(success({ name: doc.name, email })) :
+          res.json(error('Invalid username or password.'))
       })
     })
   })
@@ -33,7 +34,7 @@ router.route('/auth/register')
     const user = new User(req.body)
 
     user.save(err => {
-      if (err) return res.json({ status: 'error', err })
+      if (err) return res.json(error(err))
 
       res.json(user)
     })
