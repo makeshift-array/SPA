@@ -1,5 +1,5 @@
 .control-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 3.5rem;
 
   &:last-child {
     margin-bottom: 0;
@@ -7,9 +7,28 @@
 }
 
 .control-label {
-  
+  display: block;
+  margin-bottom: 0.3rem
 }
 
 .control {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 1.4rem;
+  border: 0.1rem solid $light-gray;
+  outline: none;
+}
 
+.btn {
+  padding: 0.8rem 1.4rem;
+  background-color: $light-gray;
+  border: 0.1rem solid $light-gray;
+  outline: none;
+  cursor: pointer;
+  transition: 0.2s background, 0.2s border;
+
+  &:hover {
+    background: darken($light-gray, 10%);
+    border-color: darken($light-gray, 10%);
+  }
 }

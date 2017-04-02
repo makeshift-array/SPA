@@ -1,5 +1,10 @@
+/**
+ * Every file here is a global style. Components can nest styles inside of the vue file.
+ */
 @import '~normalize.css/normalize.css';
 
 @import 'variables';
 @import 'reset';
 @import 'typography';
+@import 'layout';
+@import 'form';

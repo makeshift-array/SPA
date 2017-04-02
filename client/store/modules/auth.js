@@ -1,24 +1,40 @@
 import axios from 'axios'
 
-// TODO
 export default {
   namespaced: true,
-  state: {},
+  state: {
+    authenticated: false
+  },
   getters: {},
   actions: {
-    async login({ commit }, payload) {
-      await console.log('logging in', payload)
+    register({ commit }, payload) {
+      axios.post('/auth/register', payload)
+        .then(data => commit('register', data.data))
+        .catch(err => console.log('Error registering user:', err))
     },
 
-    async logout({ commit }) {
-      await console.log('logging out')
+    login({ commit }, payload) {
+      axios.post('/auth/login', payload)
+        .then(data => commit('login', data.data))
+        .catch(err => console.log('Error logging user in:', err))
     },
 
-    async register({ commit }, payload) {
-      const register = await axios.post('/auth/register', payload).then(data => data.data)
-
-      console.log('registering', register)
+    logout({ commit }) {
+      axios.post('/auth/logout', payload)
+        .then(() => commit('logout'))
+        .catch(err => console.log('Error logging user out:', err))
     }
   },
-  mutations: {}
+  mutations: {
+    register({ state }, payload) {
+      console.log('register', payload)
+    },
+    login({ state }, payload) {
+      console.log('login', payload)
+      // state.authenticated = true
+    },
+    logout({ state }, payload) {
+      state.authenticated = false
+    }
+  }
 }

@@ -4,10 +4,14 @@
 // TODO: Figure out how to make the server startup faster (if possible).
 import { resolve } from 'path'
 import express from 'express'
+import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
 
 const app = express()
 const port = process.env.PORT || 3000
+
+// Config
+app.use(bodyParser.json())
 
 // Database
 mongoose.connect('mongodb://localhost/spa')

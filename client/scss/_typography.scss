@@ -4,4 +4,20 @@ html {
 
 body {
   font-size: 1.5rem;
+  font-family: 'Open Sans', sans-serif;
+  color: $gray;
+}
+
+a {
+  text-decoration: none;
+  color: $gray;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: lighter;
 }
