@@ -6,6 +6,7 @@ import { resolve } from 'path'
 import express from 'express'
 import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
+import config from './config'
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -22,7 +23,7 @@ require('./models/user.js')
 
 // API
 // TODO: Auto load
-app.use(require('./api/user.js'))
+// app.use(require('./api/user.js'))
 app.use(require('./api/auth.js'))
 
 // Development Server

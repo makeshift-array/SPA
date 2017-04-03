@@ -1,9 +1,11 @@
+import router from '../../router'
 import axios from 'axios'
 
 export default {
   namespaced: true,
   state: {
-    authenticated: false
+    authenticated: false,
+    user: {}
   },
   getters: {},
   actions: {
@@ -17,24 +19,27 @@ export default {
       axios.post('/auth/login', payload)
         .then(data => commit('login', data.data))
         .catch(err => console.log('Error logging user in:', err))
-    },
-
-    logout({ commit }) {
-      axios.post('/auth/logout', payload)
-        .then(() => commit('logout'))
-        .catch(err => console.log('Error logging user out:', err))
     }
   },
   mutations: {
-    register({ state }, payload) {
+    register(state, payload) {
       console.log('register', payload)
     },
-    login({ state }, payload) {
-      console.log('login', payload)
-      // state.authenticated = true
+    login(state, payload) {
+      if (payload.status === 'success') {
+        state.authenticated = true
+        state.user = { ...state.user, ...payload.details }
+        localStorage.token = payload.details.token
+
+        router.push('/dashboard')
+      } else {
+        // failed to login
+      }
     },
-    logout({ state }, payload) {
+    logout(state, payload) {
       state.authenticated = false
+      localStorage.token = null
+      router.push('/')
     }
   }
 }

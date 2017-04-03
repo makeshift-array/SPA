@@ -20,8 +20,8 @@ const router = new VueRouter({
     { path: '/', name: 'home', component: Home },
     { path: '/auth', name: 'auth', component: Auth,
       children: [
-        { path: 'register', name: 'register', component: Register },
-        { path: 'login', name: 'login', component: Login }
+        { path: 'register', name: 'register', component: Register, meta: { requiresLogout: true } },
+        { path: 'login', name: 'login', component: Login, meta: { requiresLogout: true } }
       ]
     },
     { path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true } },
@@ -31,6 +31,19 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  // if (to.matched.some(record => record.meta.requiresLogout)) {
+  //   authorize()
+  //     .then(authorized => {
+  //       if (authorized) {
+  //         next({
+  //           path: '/dashboard'
+  //         })
+  //       } else {
+  //         next()
+  //       }
+  //     })
+  // }
+
   if (to.matched.some(record => record.meta.requiresAuth)) {
     authorize()
       .then(authorized => {
@@ -44,9 +57,9 @@ router.beforeEach((to, from, next) => {
         }
       })
       .catch(err => console.log('Error authorizing user:', err))
-  } else {
-    next()
   }
+
+  next()
 })
 
 export default router

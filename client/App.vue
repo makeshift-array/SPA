@@ -24,12 +24,12 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'app',
   computed: mapState('auth', ['authenticated']),
-  methods: mapActions('auth', ['logout'])
+  methods: mapMutations('auth', ['logout'])
 }
 </script>
 
