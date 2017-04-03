@@ -4,10 +4,15 @@
 // TODO: Figure out how to make the server startup faster (if possible).
 import { resolve } from 'path'
 import express from 'express'
+import bodyParser from 'body-parser'
 import mongoose from 'mongoose'
+import config from './config'
 
 const app = express()
 const port = process.env.PORT || 3000
+
+// Config
+app.use(bodyParser.json())
 
 // Database
 mongoose.connect('mongodb://localhost/spa')
@@ -18,8 +23,10 @@ require('./models/user.js')
 
 // API
 // TODO: Auto load
-app.use(require('./api/user.js'))
-app.use(require('./api/auth.js'))
+// TODO: Discuss if the user api url is needed.
+//       The user object is returned on each authentication call.
+// app.use(require('./api/user.js'))
+app.use('/api', require('./api/auth.js'))
 
 // Development Server
 // Note: We are using amd require for dynamic loading.

@@ -16,7 +16,7 @@ export default {
     publicPath: '/'
   },
   devServer: {
-    stats: false,
+    stats: true,
     publicPath: '/'
   },
   module: {
@@ -51,6 +51,13 @@ export default {
     })
   ],
   resolve: {
-    extensions: ['.js', '.vue', '.css', '.scss']
+    extensions: ['.js', '.vue', '.css', '.scss'],
+    alias: {
+      src: resolve(__dirname, 'client'),
+      components: resolve(__dirname, 'client/components'),
+      scss: resolve(__dirname, 'client/scss'),
+      store: resolve(__dirname, 'client/store'),
+      router: resolve(__dirname, 'client/router'),
+    }
   }
 }

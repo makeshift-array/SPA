@@ -1,6 +1,7 @@
-const express = require('express')
+import express from 'express'
+import mongoose from 'mongoose'
+
 const router = express.Router()
-const mongoose = require('mongoose')
 const User = mongoose.model('User')
 
 router.route('/user')
