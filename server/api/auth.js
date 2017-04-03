@@ -7,31 +7,38 @@ import { success, error } from './api'
 const router = express.Router()
 const User = mongoose.model('User')
 
-// TODO: Add JWT support
 router.route('/auth')
   .get((req, res) => {
     jwt.verify(req.get('Authorization'), config.jwtSecret, (err, decoded) => {
       if (err) return res.json(error({ authorized: false }))
 
-      res.json(success({ authorized: true }))
+      // Regenerate token to keep the session alive.
+      const token = jwt.sign(decoded, config.jwtSecret)
+
+      res.json(success({ authorized: true, user: decoded, token }))
     })
   })
 
-// TODO: Add JWT support
+// TODO: Validation
 router.route('/auth/login')
   .post((req, res) => {
-    let { email, password } = req.body
+    const { email, password } = req.body
+
+    if (!email) return res.json(error('Email is required.', 'email'))
+    if (!password) return res.json(error('Password is required.', 'password'))
 
     User.findOne({ email }, (err, doc) => {
       if (err) return res.json(error(err))
+      if (doc === null) return res.json(error('Invalid user or password.'))
 
       doc.verifyPassword(password, (err, isValid) => {
         if (err) return res.json(error(err))
 
         if (isValid) {
-          const token = jwt.sign({ name: doc.name, email }, config.jwtSecret)
+          const user = { id: doc._id, name: doc.name, email }
+          const token = jwt.sign(user, config.jwtSecret)
 
-          res.json(success({ name: doc.name, email, token }))
+          res.json(success({ authorized: true, user, token }))
         } else {
           res.json(error('Invalid username or password.'))
         }
@@ -46,7 +53,10 @@ router.route('/auth/register')
     user.save(err => {
       if (err) return res.json(error(err))
 
-      res.json(user)
+      const registeredUser = { id: user._id, name: user.name, email: user.email }
+      const token = jwt.sign(registeredUser, config.jwtSecret)
+
+      res.json(success({ authorized: true, registeredUser, token }))
     })
   })
 

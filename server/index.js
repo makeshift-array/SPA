@@ -23,8 +23,10 @@ require('./models/user.js')
 
 // API
 // TODO: Auto load
+// TODO: Discuss if the user api url is needed.
+//       The user object is returned on each authentication call.
 // app.use(require('./api/user.js'))
-app.use(require('./api/auth.js'))
+app.use('/api', require('./api/auth.js'))
 
 // Development Server
 // Note: We are using amd require for dynamic loading.

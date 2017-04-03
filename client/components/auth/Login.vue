@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style lang="sass">
-@import '../../scss/variables';
+@import '~scss/variables';
 
 .login {
   max-width: 32rem;

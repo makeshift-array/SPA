@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { authorize } from '../util/auth'
-import Home from '../components/Home'
-import Auth from '../components/Auth'
-import Login from '../components/auth/Login'
-import Register from '../components/auth/Register'
-import Dashboard from '../components/Dashboard'
-import Profile from '../components/Profile'
-import Error404 from '../components/errors/404'
+import store from 'store'
+import Home from 'components/Home'
+import Auth from 'components/Auth'
+import Login from 'components/auth/Login'
+import Register from 'components/auth/Register'
+import Dashboard from 'components/Dashboard'
+import Profile from 'components/Profile'
+import Error404 from 'components/errors/404'
 
 Vue.use(VueRouter)
 
@@ -20,8 +20,8 @@ const router = new VueRouter({
     { path: '/', name: 'home', component: Home },
     { path: '/auth', name: 'auth', component: Auth,
       children: [
-        { path: 'register', name: 'register', component: Register, meta: { requiresLogout: true } },
-        { path: 'login', name: 'login', component: Login, meta: { requiresLogout: true } }
+        { path: 'register', name: 'auth.register', component: Register },
+        { path: 'login', name: 'auth.login', component: Login }
       ]
     },
     { path: '/dashboard', name: 'dashboard', component: Dashboard, meta: { requiresAuth: true } },
@@ -30,36 +30,29 @@ const router = new VueRouter({
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  // if (to.matched.some(record => record.meta.requiresLogout)) {
-  //   authorize()
-  //     .then(authorized => {
-  //       if (authorized) {
-  //         next({
-  //           path: '/dashboard'
-  //         })
-  //       } else {
-  //         next()
-  //       }
-  //     })
-  // }
+router.beforeEach(async (to, from, next) => {
+  const isAuthorized = await store.dispatch('auth/authorize')
 
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    authorize()
-      .then(authorized => {
-        if (!authorized) {
-          next({
-            path: '/auth/login',
-            query: { redirection: to.fullPath }
-          })
-        } else {
-          next()
-        }
+    if (!isAuthorized) {
+      next({
+        path: '/auth/login',
+        query: { redirect: to.fullPath }
       })
-      .catch(err => console.log('Error authorizing user:', err))
+    } else {
+      next()
+    }
+  } else {
+    // Guard against false positive urls.
+    // e.g. We don't want to be able to see the login page if we are already logged in.
+    if (isAuthorized && to.matched.some(record => ['auth'].includes(record.name))) {
+      return next({
+        path: '/dashboard'
+      })
+    } else {
+      next()
+    }
   }
-
-  next()
 })
 
 export default router

@@ -5,9 +5,12 @@ export function success(details) {
   }
 }
 
-export function error(details) {
+export function error(message, field = null) {
   return {
     status: 'error',
-    details
+    details: {
+      field,
+      message
+    }
   }
 }

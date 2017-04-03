@@ -1,45 +1,137 @@
-import router from '../../router'
 import axios from 'axios'
+import router from 'router'
 
+// TODO: Validation
 export default {
   namespaced: true,
   state: {
-    authenticated: false,
-    user: {}
+    authorized: false,
+    token: ''
   },
   getters: {},
   actions: {
-    register({ commit }, payload) {
-      axios.post('/auth/register', payload)
-        .then(data => commit('register', data.data))
-        .catch(err => console.log('Error registering user:', err))
+    async authorize({ commit, state, rootState }, payload) {
+      return await axios.get('/api/auth', {
+        headers: { 'Authorization': (state.token || localStorage.token || '') }
+      })
+      .then(data => {
+        const status = data.data.status
+
+        if (status === 'success') {
+          const authorized = data.data.details.authorized
+          const token = data.data.details.token
+          const user = data.data.details.user
+
+          commit('updateAuthorized', { authorized })
+          commit('updateToken', { token })
+          rootState.user = { ...rootState.user, ...user }
+        } else {
+          commit('updateAuthorized', { authorized: false })
+          commit('updateToken', { token: '' })
+          rootState.user = { id: '', email: '', name: '' }
+
+          console.log('Authorization failed:', data)
+        }
+
+        return data.data.details.authorized
+      })
+      .catch(err => {
+        commit('updateAuthorized', { authorized: false })
+        commit('updateToken', { token: '' })
+        rootState.user = { id: '', email: '', name: '' }
+
+        console.log('Error authorizing:', err)
+
+        return false
+      })
     },
 
-    login({ commit }, payload) {
-      axios.post('/auth/login', payload)
-        .then(data => commit('login', data.data))
-        .catch(err => console.log('Error logging user in:', err))
+    register({ commit, rootState }, payload) {
+      axios.post('/api/auth/register', payload)
+        .then(data => {
+          const status = data.data.status
+          
+          if (status === 'success') {
+            const authorized = data.data.details.authorized
+            const token = data.data.details.token
+            const user = data.data.details.user
+
+            commit('updateAuthorized', { authorized })
+            commit('updateToken', { token })
+            rootState.user = { ...rootState.user, ...user }
+
+            router.push('/dashboard')
+          } else {
+            commit('updateAuthorized', { authorized: false })
+            commit('updateToken', { token: '' })
+            rootState.user = { id: '', email: '', name: '' }
+
+            console.log('Registration failed:', data)
+          }
+        })
+        .catch(err => {
+          commit('updateAuthorized', { authorized: false })
+          commit('updateToken', { token: '' })
+          rootState.user = { id: '', email: '', name: '' }
+
+          console.log('Error registering user:', err)
+        })
+    },
+
+    login({ commit, rootState }, payload) {
+      axios.post('/api/auth/login', payload)
+        .then(data => {
+          const status = data.data.status
+
+          if (status === 'success') {
+            const authorized = data.data.details.authorized
+            const token = data.data.details.token
+            const user = data.data.details.user
+
+            commit('updateAuthorized', { authorized })
+            commit('updateToken', { token })
+            rootState.user = { ...rootState.user, ...user }
+
+            router.push('/dashboard')
+          } else {
+            commit('updateAuthorized', { authorized: false })
+            commit('updateToken', { token: '' })
+            rootState.user = { id: '', email: '', name: '' }
+
+            console.log('Error logging in', data)
+          }
+        })
+        .catch(err => {
+          commit('updateAuthorized', { authorized: false })
+          commit('updateToken', { token: '' })
+          rootState.user = { id: '', email: '', name: '' }
+
+          console.log('Error logging user in:', err)
+        })
+    },
+
+    logout({ commit, rootState }) {
+      commit('updateAuthorized', { authorized: false })
+      commit('updateToken', { token: '' })
+      rootState.user = { id: '', email: '', name: '' }
+
+      localStorage.token = ''
+
+      router.push('/auth/login')
     }
   },
   mutations: {
-    register(state, payload) {
-      console.log('register', payload)
+    updateAuthorized(state, payload) {
+      state.authorized = payload.authorized
     },
-    login(state, payload) {
-      if (payload.status === 'success') {
-        state.authenticated = true
-        state.user = { ...state.user, ...payload.details }
-        localStorage.token = payload.details.token
 
-        router.push('/dashboard')
-      } else {
-        // failed to login
-      }
+    updateToken(state, payload) {
+      state.token = payload.token
+      localStorage.token = payload.token
     },
-    logout(state, payload) {
-      state.authenticated = false
-      localStorage.token = null
-      router.push('/')
+
+    updateError(state, payload) {
+      state.error = payload.error
     }
   }
 }
